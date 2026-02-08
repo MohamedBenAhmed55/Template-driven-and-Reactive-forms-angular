@@ -5,7 +5,7 @@ import {
   inject,
   viewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 
 @Component({
@@ -18,11 +18,16 @@ import { debounceTime } from 'rxjs';
 export class LoginComponent {
   // Reactive Form
   form = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
+    email: new FormControl('', {
+      validators: [Validators.email, Validators.required]
+    }),
+    password: new FormControl('', {
+      validators: [Validators.required, Validators.minLength(6)]
+    }),
   });
 
   onSubmit(){
+    // this.form.controls.email.addValidators([])
     console.log(this.form)
     const enteredEmail = this.form.value.email
     const enteredPassword = this.form.value.password
@@ -30,6 +35,13 @@ export class LoginComponent {
     console.log(enteredEmail, enteredPassword)
   }
 
+  get emailIsInvalid(){
+    return this.form.controls.email.touched && this.form.controls.email.dirty && this.form.controls.email.invalid
+  }
+
+  get passwordIsInvalid(){
+    return this.form.controls.password.touched && this.form.controls.password.dirty && this.form.controls.email.invalid
+  }
 
 
   // Template Driven Form
